@@ -3,7 +3,6 @@
     flex-direction: column;
     /* TODO: нужен ли padding? */
     /* padding: 10px; */
-    font-family: "AvenirNext", Helvetica, Arial, sans-serif;
     font-size: 1.8rem;
     /* background: linear-gradient(-90deg, rgb(0, 182, 158), rgb(0, 141, 163)); */
     color: rgb(255, 255, 255);
