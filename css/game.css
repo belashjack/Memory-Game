@@ -1,0 +1,61 @@
+.game {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    font-family: "AvenirNext", Helvetica, Arial, sans-serif;
+    font-size: 1.8rem;
+    color: rgb(255, 255, 255);
+}
+
+.navigation {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 90%;
+}
+
+@media screen and (max-width: 700px) {
+    .navigation {
+        flex-direction: column;
+    }
+    .timer {
+        order: 3;
+    }
+}
+
+.timer {
+    box-sizing: border-box;
+    width: 70px;
+    height: 80px;
+    margin: 15px 5px;
+    padding: 5px;
+    text-align: center;
+    border-radius: 3px;
+    background-color: rgba(7, 116, 133, 0.65);
+}
+.timer-inner {
+    width: 100%;
+    height: 50px;
+    border-radius: 3px;
+    background-color: rgb(14, 92, 104);
+}
+.timer-value {
+    line-height: 5rem;
+}
+.timer-units {
+    font-size: 1.2rem;
+    line-height: 2rem;
+}
+
+
+
+
+
+
+
+.field {
+    width: 90%;
+    height: 500px;
+    background-color: rgba(255, 255, 255, 0.9);
+}

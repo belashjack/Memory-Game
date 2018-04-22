@@ -1,22 +1,13 @@
-@font-face {
-    font-family: AvenirNext;
-    src: url('../fonts/AvenirNext-Regular.ttf');
-    font-weight: 400;
-}
-
-html {
-    font-size: 10px;
-}
-body {
-    margin: 0px;
-}
-main {
+.homepage {
     display: flex;
     flex-direction: column;
+    /* TODO: нужен ли padding? */
+    /* padding: 10px; */
     font-family: "AvenirNext", Helvetica, Arial, sans-serif;
     font-size: 1.8rem;
-    background: linear-gradient(-90deg, rgb(0, 182, 158), rgb(0, 141, 163));
+    /* background: linear-gradient(-90deg, rgb(0, 182, 158), rgb(0, 141, 163)); */
     color: rgb(255, 255, 255);
+    display: none;
 }
 
 .greeting {
@@ -157,7 +148,6 @@ main {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    margin-bottom: 15px;
 }
 .difficulty {
     display: flex;
@@ -204,33 +194,4 @@ main {
 .number-of-cards {
     font-size: 2.7rem;
     font-weight: 600;
-}
-
-.button {
-    align-self: center;
-    margin-bottom: 15px;
-    padding: 15px 48px;
-    font-size: 2.7rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    border: 1px solid white;
-    border-radius: 3px;
-    transition-duration: 0.15s, 0.15s, 0.15s;
-    transition-property: color, background-color, border-color;
-    transition-timing-function: ease-out, ease-out, ease-out;
-    cursor: pointer;
-    user-select: none;
-    outline: none;
-}
-.button:hover {
-    background-color: rgb(255, 255, 255);
-    color: rgb(66, 152, 165);
-}
-.button:focus {
-    background-color: rgb(255, 255, 255);
-    color: rgb(66, 152, 165);
-}
-.button:active {
-    background-color: rgb(234, 240, 246);
-    border-color: rgb(234, 240, 246);
 }

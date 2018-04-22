@@ -1,5 +1,3 @@
-console.log(window.location);
-
 const addListeners = function addListeners() {
     const changeActivePattern = function changeActivePattern() {
         if (event.target.classList.contains('back-side-pattern') && !event.target.classList.contains('active-pattern')) {
@@ -45,11 +43,25 @@ const addListeners = function addListeners() {
     };
     const patternContainer = document.querySelector('.back-sides-container');
     const difficultiesContainer = document.querySelector('.difficulties-container');
+    const playButton = document.querySelector('.play-button');
 
     patternContainer.addEventListener('mousedown', changeActivePattern);
     document.body.addEventListener('keydown', changeActivePatternViaKeyboard);
     difficultiesContainer.addEventListener('mousedown', changeActiveDifficulty);
     document.body.addEventListener('keydown', changeActiveDifficultyViaKeyboard);
+    playButton.addEventListener('click', forceBlur);
+    playButton.addEventListener('click', startGame);
 }
 
 document.addEventListener('DOMContentLoaded', addListeners);
+
+const forceBlur = function forceBlur() {
+    event.target.blur();
+}
+
+const startGame = function startGame() {
+    const homepage = document.querySelector('.homepage');
+    const game = document.querySelector('.game');
+    homepage.style.display = 'none';
+    game.style.display = 'block';
+}
