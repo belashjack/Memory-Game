@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="./css/style.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <main>
+        <section class="greeting">
+            <h1>Hi 👋 Nice to meet you!</h1>
+        </section>
+        <section class="game-description">
+            <p>
+                <strong>&ldquo;Memory&rdquo;</strong> is a game where the goal is to find all pairs of cards for the shortest time.</p>
+        </section>
+        <section class="game-rules">
+            <h2>To play</h2>
+            <ol>
+                <li>Select two cards and try to match the pictures</li>
+                <li>If you match the pictures, you can go again</li>
+                <li>If you don't match the pictures, the computer turns them</li>
+                <li>Game ends when all pairs are found</li>
+            </ol>
+        </section>
+        <section class="player-info">
+            <h2>Please, provide us with some information to play</h2>
+            <label>First Name
+                <input type="text" name="firstName" id="firstName" tabindex="1">
+            </label>
+            <label>Last Name
+                <input type="text" name="firstName" id="lastName" tabindex="2">
+            </label>
+            <label>Email
+                <input type="email" name="firstName" id="email" tabindex="3">
+            </label>
+        </section>
+        <section class="game-settings">
+            <h2>Choose the back of the card</h2>
+            <div class="back-sides-container">
+                <div class="back-side-pattern back-side-pattern-1 active-pattern" tabindex="10"></div>
+                <div class="back-side-pattern back-side-pattern-2" tabindex="11"></div>
+                <div class="back-side-pattern back-side-pattern-3" tabindex="12"></div>
+                <div class="back-side-pattern back-side-pattern-4" tabindex="13"></div>
+                <div class="back-side-pattern back-side-pattern-5" tabindex="14"></div>
+            </div>
+            <h2>Choose difficulty</h2>
+            <div class="difficulties-container">
+                <div class="difficulty easy active-difficulty" tabindex="20">
+                    <span class="level">easy</span>
+                    <span class="number-of-cards">4&times2 cards</span>
+                </div>
+                <div class="difficulty normal" tabindex="21">
+                    <span class="level">normal</span>
+                    <span class="number-of-cards">5&times2 cards</span>
+                </div>
+                <div class="difficulty hard" tabindex="22">
+                    <span class="level">hard</span>
+                    <span class="number-of-cards">5&times3 cards</span>
+                </div>
+            </div>
+        </section>
+        <a class="button play-button" tabindex="30">Play</a>
+        <a class="button scoreboard" tabindex="31">Scoreboard</a>
+    </main>
+    <script src="./js/index.js"></script>
+</body>
+
+</html>

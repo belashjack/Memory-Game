@@ -1,0 +1,236 @@
+@font-face {
+    font-family: AvenirNext;
+    src: url('../fonts/AvenirNext-Regular.ttf');
+    font-weight: 400;
+}
+
+html {
+    font-size: 10px;
+}
+body {
+    margin: 0px;
+}
+main {
+    display: flex;
+    flex-direction: column;
+    font-family: "AvenirNext", Helvetica, Arial, sans-serif;
+    font-size: 1.8rem;
+    background: linear-gradient(-90deg, rgb(0, 182, 158), rgb(0, 141, 163));
+    color: rgb(255, 255, 255);
+}
+
+.greeting {
+    text-align: center;
+}
+.greeting h1 {
+    margin: 1.5rem;
+}
+
+.game-description {
+    text-align: center;
+}
+.game-description p {
+    margin: 1rem;
+}
+
+.game-rules {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.game-rules h2 {
+    margin: 1.5rem;
+}
+.game-rules ol {
+    margin: 0rem 0rem 1rem;
+}
+
+.player-info {
+    text-align: center;
+}
+.player-info h2 {
+    margin: 1.5rem;
+}
+.player-info label {
+    display: inline-block;
+    margin: 0rem 0.5rem 1rem;
+    font-size: 1.6rem;
+}
+.player-info input {
+    display: block;
+    margin: 0 auto;
+    height: 40px;
+    text-align: center;
+    font-size: 1.6rem;
+    font-weight: 500;
+    color: rgb(0, 115, 133);
+    background-color: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 3px;
+    outline: none;
+}
+.player-info input[type="email"] {
+    min-width: 250px;
+}
+.player-info input:focus {
+    box-shadow: 0 0 1rem rgba(255, 255, 255, 0.9);
+}
+
+.game-settings {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+.game-settings h2 {
+    margin: 1.5rem;
+}
+
+.back-sides-container {
+    max-width: 64%;
+    max-height: 320px;
+    overflow: hidden;
+    font-size: 0;
+}
+.back-side-pattern {
+    display: inline-block;
+    width: 80px;
+    height: 120px;
+    margin: 20px 20px;
+    box-shadow: 0.1rem -0.1rem 0.8rem rgb(150, 150, 150);
+    border-radius: 3px;
+    opacity: 0.4;
+    outline: none;
+    cursor: pointer;
+}
+.back-side-pattern:hover, .back-side-pattern:focus, .difficulty:hover, .difficulty:focus {
+    transform: scale(1.1);
+}
+.back-side-pattern-1 {
+    background-image: url('../images/good_job.jpg');
+    background-size: 82px 123px;
+    background-position: -1px -1px;
+}
+.back-side-pattern-2 {
+    background: linear-gradient(45deg, #dca 12%, transparent 0, transparent 88%, #dca 0),
+                linear-gradient(135deg, transparent 37%, #a85 0, #a85 63%, transparent 0),
+                linear-gradient(45deg, transparent 37%, #dca 0, #dca 63%, transparent 0) #753;
+    background-size: 12px 12px;
+}
+.back-side-pattern-3 {
+    background-color: #6d695c;
+    background-image: repeating-linear-gradient(120deg, rgba(255,255,255,.1), rgba(255,255,255,.1) 1px, transparent 1px, transparent 60px),
+        repeating-linear-gradient(60deg, rgba(255,255,255,.1), rgba(255,255,255,.1) 1px, transparent 1px, transparent 60px),
+        linear-gradient(60deg, rgba(0,0,0,.1) 25%, transparent 25%, transparent 75%, rgba(0,0,0,.1) 75%, rgba(0,0,0,.1)),
+        linear-gradient(120deg, rgba(0,0,0,.1) 25%, transparent 25%, transparent 75%, rgba(0,0,0,.1) 75%, rgba(0,0,0,.1));
+    background-size: 18px 30px;
+}
+.back-side-pattern-4 {
+    background-color: #eee;
+    background-image: linear-gradient(45deg, black 25%, transparent 25%, transparent 75%, black 75%, black), 
+        linear-gradient(-45deg, black 25%, transparent 25%, transparent 75%, black 75%, black);
+    background-size: 20px 20px;
+}
+.back-side-pattern-5 {
+    background-image: url('../images/card_back_side.png');
+    background-size: 126px 168px;
+    background-position: -23px -24px;
+}
+.active-pattern {
+    position: relative;
+    opacity: 1;
+}
+.active-pattern::after {
+    content: '✔';    
+    position: absolute;
+    top: calc(50% - 28px);
+    left: calc(50% - 28px);
+    width: 50px;
+    height: 50px;
+    font-size: 4rem;
+    border: 3px solid rgb(255, 255, 255);
+    border-radius: 50%;
+    color: rgb(255, 255, 255);
+}
+
+.difficulties-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+.difficulty {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 200px;
+    height: 120px;
+    margin: 20px;
+    border-radius: 3px;
+    opacity: 0.4;
+    outline: none;
+    cursor: pointer;
+}
+.easy {
+    background-color: rgb(66, 211, 66);
+}
+.normal {
+    background-color:  rgb(219, 216, 50);
+}
+.hard {
+    background-color:  rgb(219, 62, 62);
+}
+.active-difficulty {
+    position: relative;
+    opacity: 1;
+}
+.active-difficulty::after {
+    content: '✔';    
+    position: absolute;
+    top: calc(50% - 23px);
+    left: calc(50% - 23px);
+    width: 40px;
+    height: 40px;
+    font-size: 3.3rem;
+    border: 3px solid rgb(255, 255, 255);
+    border-radius: 50%;
+    color: rgb(255, 255, 255);
+}
+.level {
+    font-size: 2.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+.number-of-cards {
+    font-size: 2.7rem;
+    font-weight: 600;
+}
+
+.button {
+    align-self: center;
+    margin-bottom: 15px;
+    padding: 15px 48px;
+    font-size: 2.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    border: 1px solid white;
+    border-radius: 3px;
+    transition-duration: 0.15s, 0.15s, 0.15s;
+    transition-property: color, background-color, border-color;
+    transition-timing-function: ease-out, ease-out, ease-out;
+    cursor: pointer;
+    user-select: none;
+    outline: none;
+}
+.button:hover {
+    background-color: rgb(255, 255, 255);
+    color: rgb(66, 152, 165);
+}
+.button:focus {
+    background-color: rgb(255, 255, 255);
+    color: rgb(66, 152, 165);
+}
+.button:active {
+    background-color: rgb(234, 240, 246);
+    border-color: rgb(234, 240, 246);
+}
