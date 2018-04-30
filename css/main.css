@@ -13,6 +13,7 @@ body {
 }
 main {
     min-height: calc(100vh - 100px);
+    padding: 10px;
     background: linear-gradient(-90deg, rgb(0, 182, 158), rgb(0, 141, 163));
 }
 footer {
@@ -60,8 +61,4 @@ footer a {
 .button:active {
     background-color: rgb(234, 240, 246);
     border-color: rgb(234, 240, 246);
-}
-
-a {
-    /* text-decoration: none; */
 }
