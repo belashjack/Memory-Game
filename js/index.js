@@ -1,209 +1,280 @@
+class Game {
+    constructor() {
+        this.playerInfo = {};
+        this.stopTime = 0;
+        this.numberOfCards = 0;
+        this.backSide = '';
+        this.cards = [];
+        this.flippedCardsAmount = 0;
+        this.frontSides = [];
+        this.timeouts = [];
+    }
+    getPlayerInfo() {
+        this.playerInfo.firstName = form.elements['firstName'].value;
+        this.playerInfo.lastName = form.elements['lastName'].value;
+        this.playerInfo.email = form.elements['email'].value;
+    }
+    getNumberOfCards() {
+        // this.numberOfCards = Number(difficultiesContainer.querySelector('.active-difficulty').dataset.amount);
+        this.numberOfCards = 2;
+    }
+    getBackSide() {
+        this.backSide = getComputedStyle(patternContainer.querySelector('.active-pattern')).backgroundImage;
+    }
+    getFrontSides() {
+        this.frontSides = frontSides.slice(0, this.numberOfCards / 2).concat(frontSides.slice(0, this.numberOfCards / 2));
+    }
+    createCards() {
+        // auxiliary function to get random background image of the front side
+        const getRandomFrontSide = function getRandomFrontSide(frontSides, numberOfCards) {
+            let index = getRandomInt(0, frontSides.length - 1);
+            const frontSide = frontSides[index];
+            frontSides.splice(index, 1);
+            return frontSide;
+        }
+
+        // auxiliary function to get random integer in range
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        // create card DOM objects
+        for (let i = 0; i < this.numberOfCards; i++) {
+            const card = new Card(i, this.backSide, getRandomFrontSide(this.frontSides, this.numberOfCards));
+            this.cards.push(card.getDOMElem());
+        }
+    }
+    addCards() {
+        // add card DOM objects to the field
+        this.cards.forEach((elem) => {
+            const card = elem;
+            field.appendChild(card);
+        });
+    }
+    addGameListeners() {
+        field.addEventListener('click', Card.turnCard);
+    }
+    showGame() {
+        homepage.style.display = 'none';
+        gamepage.style.display = 'flex';
+        field.style.display = 'flex';
+        window.scrollTo(0, 0);
+    }
+    hideGame() {
+        homepage.style.display = 'flex';
+        gamepage.style.display = 'none';
+        // field.style.display = 'flex';
+        window.scrollTo(0, 0);
+    }
+    compareCards(flippedCards) {
+        if (getComputedStyle(flippedCards[0].children[0]).backgroundImage === getComputedStyle(flippedCards[1].children[0]).backgroundImage) {
+            return true;
+        }
+        return false;
+    }
+    getFlippedCards() {
+        return [...field.querySelectorAll('.flipped')];
+    }
+    showResult() {
+        field.innerHTML = '';
+        field.style.display = 'none';
+        result.style.display = 'flex';
+        resultValue.innerHTML = timerDOMElem.innerHTML + ' sec.';
+    }
+    stopGame() {
+        timer.stop();
+        field.innerHTML = '';
+        this.timeouts.forEach((timeout) => {
+            clearTimeout(timeout);
+        });
+        result.style.display = 'none';
+        resultValue.innerHTML = '';
+    }
+}
+
+class Card {
+    constructor(id, backSide, frontSide) {
+        this.id = id;
+        this.backSide = backSide;
+        this.frontSide = frontSide;
+    }
+    getDOMElem() {
+        const card = document.createElement('section');
+        card.classList.add('card');
+        const cardInner = document.createElement('div');
+        cardInner.classList.add('card-inner');
+        const front = document.createElement('figure');
+        front.classList.add('front');
+        front.style.background = this.frontSide;
+        front.style.backgroundSize = 'cover';
+        const back = document.createElement('figure');
+        back.classList.add('back');
+        back.style.background = this.backSide;
+        back.style.backgroundSize = 'cover';
+        cardInner.appendChild(front);
+        cardInner.appendChild(back);
+        card.appendChild(cardInner);
+        return card;
+    }
+    static turnCard(event) {
+        // cancel if not clicked on card
+        if (!event.target.classList.contains('back')) {
+            return;
+        }
+
+        // cancel if clicked on the first flipped card again
+        if (game.getFlippedCards()[0] === event.target.parentNode) {
+            return;
+        }
+
+        // flip card
+        if (game.flippedCardsAmount < 2) {
+            event.target.parentNode.classList.add('flipped');
+        }
+
+        // increase counter of flipped cards
+        game.flippedCardsAmount = game.flippedCardsAmount + 1;
+
+        // compare two flipped cards and remove them or flip them back
+        if (game.flippedCardsAmount === 2) {
+            let flippedCards = game.getFlippedCards();
+            if (game.compareCards(flippedCards)) {
+                flippedCards.forEach((elem) => {
+                    const timeout1 = setTimeout(() => {
+                        elem.parentNode.style.opacity = '0';
+                    }, 1000);
+                    const timeout2 = setTimeout(() => {
+                        game.cards.splice(game.cards.indexOf(elem.parentNode), 1);
+                        elem.classList.remove('flipped');
+                        elem.style.display = 'none';
+                        if (game.cards.length === 0) {
+                            timer.stop();
+                            game.showResult();
+                            storeResult();
+                        }
+                        game.flippedCardsAmount = 0;
+                    }, 1900);
+                    game.timeouts.push(timeout1, timeout2);
+                });
+            } else {
+                flippedCards.forEach((elem) => {
+                    const timeout1 = setTimeout(() => {
+                        elem.classList.remove('flipped');
+                    }, 1000);
+                    const timeout2 = setTimeout(() => {
+                        game.flippedCardsAmount = 0;
+                    }, 1500);
+                    game.timeouts.push(timeout1, timeout2);
+                });
+            }
+        }
+    }
+}
+
+class Timer {
+    constructor() {
+        this.startDate = 0;
+    }
+    start() {
+        timerDOMElem.innerHTML = String(this.startDate);
+        this.startDate = new Date();
+        this.timerId = setInterval(() => {
+            timerDOMElem.innerHTML = Math.round((Date.now() - this.startDate.getTime()) / 1000);
+        }, 1000);
+    }
+    stop() {
+        game.playerInfo.stopTime = new Date().getTime();
+        clearInterval(this.timerId);
+    }
+}
+
 const startGame = function startGame() {
-    class Game {
-        constructor(numberOfCards, backSide) {
-            this.numberOfCards = numberOfCards;
-            this.backSide = backSide;
-            this.cards = [];
-            this.flippedCardsAmount = 0;
+    // TODO: потом включить
+    // if(!checkValidity()) {
+    //     return false;
+    // }
 
-            // array of background images of the front side
-            this.frontSides = [
-                'url("./images/messi.jpg")',
-                'url("./images/messi.jpg")',
-                'url("./images/ronaldo.jpg")',
-                'url("./images/ronaldo.jpg")',
-                'url("./images/neymar.jpg")',
-                'url("./images/neymar.jpg")',
-                'url("./images/buffon.jpg")',
-                'url("./images/buffon.jpg")',
-                'blue',
-                'blue',
-                'black',
-                'black',
-                'pink',
-                'pink',
-                'rebeccabue',
-                'rebeccabue',
-                'red',
-                'red',
-                'yellow',
-                'yellow',
-                'orange',
-                'orange',
-                'lightyellow',
-                'lightyellow',
-                'lightyellow',
-                'lightyellow',
-            ];
-        }
-        createCards() {
-            // auxiliary function to get random background image of the front side
-            const getRandomFrontSide = function getRandomFrontSide(frontSides, numberOfCards) {
-                let index = getRandomInt(0, numberOfCards - 1);
-                while (frontSides[index] === undefined) {
-                    index = getRandomInt(0, numberOfCards - 1);
-                }
-                const frontSide = frontSides[index];
-                delete frontSides[index];
-                return frontSide;
-            }
+    // get player info (name, lastname, email)
+    game.getPlayerInfo();
 
-            // auxiliary function to get random integer in range
-            function getRandomInt(min, max) {
-                return Math.floor(Math.random() * (max - min + 1)) + min;
-            }
+    // get number of cards
+    game.getNumberOfCards();
 
-            // create card DOM objects
-            for (let i = 0; i < this.numberOfCards; i++) {
-                const card = new Card(i, this.backSide, getRandomFrontSide(this.frontSides, this.numberOfCards));
-                this.cards.push(card.getDOMElem());
-            }
-        }
-        addCards() {
-            // add card DOM objects to the field
-            this.cards.forEach((elem) => {
-                const card = elem;
-                field.appendChild(card);
-            });
-        }
-        addListeners() {
-            field.addEventListener('click', () => {
-                this.turnCard();
-            });
-        }
-        showField() {
-            homepage.style.display = 'none';
-            gamepage.style.display = 'flex';
-            window.scrollTo(0, 0);
-        }
-        turnCard() {
-            // cancel if not clicked on card
-            if (!event.target.classList.contains('back')) {
-                return;
-            }
+    // get back side background
+    game.getBackSide();
 
-            // cancel if clicked on the first flipped card again
-            if (this.getFlippedCards()[0] === event.target.parentNode) {
-                return;
-            }
-
-            // flip card
-            if (this.flippedCardsAmount < 2) {
-                event.target.parentNode.classList.add('flipped');
-            }
-
-            // increase counter of flipped cards
-            this.flippedCardsAmount = this.flippedCardsAmount + 1;
-
-            // compare two flipped cards and remove them or flip them back
-            if (this.flippedCardsAmount === 2) {
-                let flippedCards = this.getFlippedCards();
-                if (this.compareCards(flippedCards)) {
-                    flippedCards.forEach((elem) => {
-                        setTimeout(() => {
-                            elem.parentNode.style.opacity = '0';
-                        }, 1000);
-                        setTimeout(() => {
-                            this.cards.splice(this.cards.indexOf(elem.parentNode), 1);
-                            elem.classList.remove('flipped');
-                            elem.style.display = 'none';
-                            if (this.cards.length === 0) {
-                                timer.stop();
-                            }
-                            this.flippedCardsAmount = 0;
-                        }, 1900);
-                    });
-                } else {
-                    flippedCards.forEach((elem) => {
-                        setTimeout(() => {
-                            elem.classList.remove('flipped');
-                        }, 1000);
-                        setTimeout(() => {
-                            this.flippedCardsAmount = 0;
-                        }, 1500);
-                    });
-                }
-            }
-        }
-        compareCards(flippedCards) {
-            if (getComputedStyle(flippedCards[0].children[0]).backgroundImage === getComputedStyle(flippedCards[1].children[0]).backgroundImage) {
-                return true;
-            }
-            return false;
-        }
-        getFlippedCards() {
-            return [...field.querySelectorAll('.flipped')];
-        }
-    }
-
-    class Card {
-        constructor(id, backSide, frontSide) {
-            this.id = id;
-            this.backSide = backSide;
-            this.frontSide = frontSide;
-        }
-        getDOMElem() {
-            const card = document.createElement('section');
-            card.classList.add('card');
-            const cardInner = document.createElement('div');
-            cardInner.classList.add('card-inner');
-            const front = document.createElement('figure');
-            front.classList.add('front');
-            front.style.background = this.frontSide;
-            front.style.backgroundSize = 'cover';
-            const back = document.createElement('figure');
-            back.classList.add('back');
-            back.style.background = this.backSide;
-            back.style.backgroundSize = 'cover';
-            cardInner.appendChild(front);
-            cardInner.appendChild(back);
-            card.appendChild(cardInner);
-            return card;
-        }
-    }
-
-    class Timer {
-        constructor() {
-            this.startData = 0;
-        }
-        start() {
-            this.startData = new Date();
-            let span = document.createElement('span');
-            span.innerHTML = '0';
-            document.body.appendChild(span);
-            this.timerId = setInterval(() => {
-                span.innerHTML = Math.round((Date.now() - this.startData.getTime()) / 1000);
-            }, 1000);
-        }
-        stop() {
-            clearInterval(this.timerId);
-            alert('er');
-        }
-    }
-
-    const getNumberOfCards = function getNumberOfCards() {
-        // return Number(difficultiesContainer.querySelector('.active-difficulty').dataset.amount);
-        return 6;
-    }
-    const getBackSide = function getBackSide() {
-        return getComputedStyle(patternContainer.querySelector('.active-pattern')).backgroundImage;
-    }
-
-    // get number of cards and background of the back side
-    const numberOfCards = getNumberOfCards();
-    const backSide = getBackSide();
-
-    // create and initialize game object
-    const game = new Game(numberOfCards, backSide);
+    // get front side backgrounds
+    game.getFrontSides();
 
     game.createCards();
-    game.addCards();
-    game.addListeners();
-    game.showField();
 
-    const timer = new Timer();
+    game.addCards();
+    game.addGameListeners();
+    game.showGame();
+
     timer.start();
 }
+const restartGame = function restartGame() {
+    game.stopGame();
+    game = new Game();
+    timer = new Timer();
+    startGame(game, timer);
+}
+const stopGame = function stopGame() {
+    game.stopGame();
+    game.hideGame();
+    game = new Game();
+    timer = new Timer();
+}
+const checkValidity = function checkValidity() {
+    const elements = [...form.elements];
+    let hasMistakes = false;
+    elements.forEach((elem) => {
+        if (!elem.checkValidity()) {
+            hasMistakes = true;
+            form.previousElementSibling.scrollIntoView();
+            elem.classList.add('invalid-field');
+        } else {
+            elem.classList.remove('invalid-field');
+        }
+    });
+    if (document.querySelector('.invalid-field')) {
+        document.querySelector('.invalid-field').focus();
+    }
+    return !hasMistakes;
+}
+const storeResult = function storeResult() {
+    const archive = [];
+    const keys = Object.keys(localStorage);
+
+    game.playerInfo.time = timerDOMElem.innerHTML;
+
+    for (let i = 0; i < keys.length && i < 10; i++) {
+        archive.push(localStorage.getItem(keys[i]))
+    }
+
+    if (archive.length === 0) {
+        localStorage.setItem(1, JSON.stringify(game.playerInfo));
+    } else {
+        archive.push(JSON.stringify(game.playerInfo));
+        archive.sort((a, b) => {
+            if (Number(JSON.parse(a).time) < Number(JSON.parse(b).time)) {
+                return -1;
+              }
+              if (Number(JSON.parse(a).time) > Number(JSON.parse(b).time)) {
+                return 1;
+              }
+            return Number(JSON.parse(a).stopTime) - Number(JSON.parse(b).stopTime);
+        });
+
+        localStorage.clear();
+        
+        for (let i = 1; i <= archive.length && i <= 10; i++) {
+            localStorage.setItem(i, archive[i - 1]);
+        }
+    }
+}
+
 
 const addListeners = function addListeners() {
     const changeActivePattern = function changeActivePattern() {
@@ -218,7 +289,7 @@ const addListeners = function addListeners() {
             event.target.classList.add('active-pattern');
         };
     };
-    const changeActivePatternViaKeyboard = function changeActivePatternViaKeyboard() {
+    const changeActivePatternViaKeyboard = function changeActivePatternViaKeyboard(event) {
         if (event.target.classList.contains('back-side-pattern') && (event.keyCode === keycodes.ENTER || event.keyCode === keycodes.SPACE)) {
             event.preventDefault();
             changeActivePattern();
@@ -237,13 +308,13 @@ const addListeners = function addListeners() {
             target.classList.add('active-difficulty');
         };
     };
-    const changeActiveDifficultyViaKeyboard = function changeActiveDifficultyViaKeyboard() {
+    const changeActiveDifficultyViaKeyboard = function changeActiveDifficultyViaKeyboard(event) {
         if (event.target.classList.contains('difficulty') && (event.keyCode === keycodes.ENTER || event.keyCode === keycodes.SPACE)) {
             event.preventDefault();
             changeActiveDifficulty();
         }
     };
-    const forceBlur = function forceBlur() {
+    const forceBlur = function forceBlur(event) {
         event.target.blur();
     }
 
@@ -251,7 +322,6 @@ const addListeners = function addListeners() {
         ENTER: 13,
         SPACE: 32
     };
-    
     const buttons = [...document.querySelectorAll('.button')];
 
     patternContainer.addEventListener('mousedown', changeActivePattern);
@@ -260,17 +330,42 @@ const addListeners = function addListeners() {
     document.body.addEventListener('keydown', changeActiveDifficultyViaKeyboard);
     buttons.forEach(button => { button.addEventListener('click', forceBlur) });
 
-    // start game when click on PLAY button
+    // start game when clicked on PLAY button
     playButton.addEventListener('click', startGame);
+
+    // restart game when clicked on PLAY AGAIN button
+    playAgainButton.addEventListener('click', restartGame);
+
+    // stop game when clicked on HOMEPAGE button
+    homepageButton.addEventListener('click', stopGame);
 }
 
 const homepage = document.querySelector('.homepage');
+const form = document.forms['info'];
 const patternContainer = document.querySelector('.back-sides-container');
 const difficultiesContainer = document.querySelector('.difficulties-container');
 const playButton = document.querySelector('.play-button');
 
 const gamepage = document.querySelector('.gamepage');
+const homepageButton = document.querySelector('.homepage-button');
+const timerDOMElem = document.querySelector('.timer-value');
+const playAgainButton = document.querySelector('.play-again-button');
 const field = document.querySelector('.field');
+const result = gamepage.querySelector('.result');
+const resultValue = result.lastElementChild;
+
+// front side backgrounds for all games
+const frontSides = [
+    'url("./images/messi.jpg")',
+    'url("./images/ronaldo.jpg")',
+    'url("./images/neymar.jpg")',
+    'url("./images/buffon.jpg")',
+];
+
+// create and initialize game object
+let game = new Game();
+
+let timer = new Timer();
 
 addListeners();
 

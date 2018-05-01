@@ -61,7 +61,9 @@
 .player-info input:focus {
     box-shadow: 0 0 1rem rgba(255, 255, 255, 0.9);
 }
-
+.player-info .invalid-field {
+    border: 2px solid red;
+}
 .game-settings {
     display: flex;
     flex-direction: column;

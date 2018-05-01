@@ -34,15 +34,17 @@
             </section>
             <section class="player-info">
                 <h2>Please, provide us with some information to play</h2>
-                <label>First Name
-                    <input type="text" name="firstName" id="firstName" tabindex="1">
-                </label>
-                <label>Last Name
-                    <input type="text" name="firstName" id="lastName" tabindex="2">
-                </label>
-                <label>Email
-                    <input type="email" name="firstName" id="email" tabindex="3">
-                </label>
+                <form action="" name="info">
+                    <label>First Name
+                        <input type="text" name="firstName" id="firstName" tabindex="1" required>
+                    </label>
+                    <label>Last Name
+                        <input type="text" name="lastName" id="lastName" tabindex="2" required>
+                    </label>
+                    <label>Email
+                        <input type="email" name="email" id="email" tabindex="3" placeholder="example@site.com" required>
+                    </label>
+                </form>
             </section>
             <section class="game-settings">
                 <h2>Choose the back of the card</h2>
@@ -74,17 +76,21 @@
         </div>
         <div class="gamepage">
             <nav class="navigation">
-                <a class="button">Homepage</a>
+                <a class="button homepage-button">Homepage</a>
                 <section class="timer">
                     <div class="timer-inner">
                         <span class="timer-value">0</span>
                     </div>
                     <span class="timer-units">Seconds</span>
                 </section>
-                <a class="button">Scoreboard</a>
+                <a class="button play-again-button">Play again</a>
             </nav>
             <section class="field">
-                
+
+            </section>
+            <section class="result">
+                <span>Your result is</span>
+                <span class="result-value"></span>
             </section>
         </div>
     </main>
@@ -94,8 +100,12 @@
             <span>© 2018 Yauheni Belash</span>
         </section>
         <section class="contact">
-            <span class="email">Email: <a href="mailto:belashjack1@gmail.com">belashjack1@gmail.com</a></span>
-            <span class="telegram">Telegram: <a href="tg://resolve?domain=belashjack">belashjack</a></span>
+            <span class="email">Email:
+                <a href="mailto:belashjack1@gmail.com">belashjack1@gmail.com</a>
+            </span>
+            <span class="telegram">Telegram:
+                <a href="tg://resolve?domain=belashjack">belashjack</a>
+            </span>
         </section>
     </footer>
     <script src="./js/index.js"></script>

@@ -25,6 +25,11 @@ footer {
     background-color: rgb(10, 50, 56);
     color: rgb(255, 255, 255);
 }
+@media screen and (max-width: 480px) {
+    footer {
+        flex-direction: column;
+    }
+}
 footer a {
     color: rgb(255, 255, 255);
 }
@@ -32,7 +37,9 @@ footer a {
     display: flex;
     flex-direction: column;
 }
-
+::placeholder {
+    opacity: 0.5;
+}
 .button {
     margin: auto;
     margin-top: 15px;
