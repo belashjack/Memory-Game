@@ -15,8 +15,7 @@ class Game {
         this.playerInfo.email = form.elements['email'].value;
     }
     getNumberOfCards() {
-        // this.numberOfCards = Number(difficultiesContainer.querySelector('.active-difficulty').dataset.amount);
-        this.numberOfCards = 2;
+        this.numberOfCards = Number(difficultiesContainer.querySelector('.active-difficulty').dataset.amount);
     }
     getBackSide() {
         this.backSide = getComputedStyle(patternContainer.querySelector('.active-pattern')).backgroundImage;
@@ -189,10 +188,9 @@ class Timer {
 }
 
 const startGame = function startGame() {
-    // TODO: потом включить
-    // if(!checkValidity()) {
-    //     return false;
-    // }
+    if(!checkValidity()) {
+        return false;
+    }
 
     // get player info (name, lastname, email)
     game.getPlayerInfo();
@@ -260,19 +258,63 @@ const storeResult = function storeResult() {
         archive.sort((a, b) => {
             if (Number(JSON.parse(a).time) < Number(JSON.parse(b).time)) {
                 return -1;
-              }
-              if (Number(JSON.parse(a).time) > Number(JSON.parse(b).time)) {
+            }
+            if (Number(JSON.parse(a).time) > Number(JSON.parse(b).time)) {
                 return 1;
-              }
+            }
             return Number(JSON.parse(a).stopTime) - Number(JSON.parse(b).stopTime);
         });
-
-        localStorage.clear();
-        
         for (let i = 1; i <= archive.length && i <= 10; i++) {
             localStorage.setItem(i, archive[i - 1]);
         }
     }
+}
+const showScoreboard = function showScoreboard() {
+    homepage.style.display = 'none';
+    scoreboard.style.display = 'flex';
+
+    const tbody = scoreboardTable.tBodies[0];
+    const archive = [];
+    const keys = Object.keys(localStorage);
+
+    if (keys.length === 0) {
+        const noDataRow = document.createElement('tr');
+        const noDataCell = document.createElement('td');
+        noDataCell.innerHTML = 'NO DATA YET';
+        noDataCell.colSpan = '4';
+        noDataRow.appendChild(noDataCell);
+        tbody.appendChild(noDataRow);
+    }
+
+    keys.sort((a, b) => {
+        return Number(a) - Number(b);
+    });
+
+    for (let i = 0; i < keys.length; i++) {
+        archive.push(localStorage.getItem(keys[i]))
+    }
+
+    for (let i = 0; i < archive.length; i++) {
+        const row = document.createElement('tr');
+        const place = document.createElement('td');
+        const firstName = document.createElement('td');
+        const lastName = document.createElement('td');
+        const time = document.createElement('td');
+        place.innerHTML = keys[i];
+        firstName.innerHTML = JSON.parse(archive[i]).firstName;
+        lastName.innerHTML = JSON.parse(archive[i]).lastName;
+        time.innerHTML = JSON.parse(archive[i]).time + ' sec.';
+        row.appendChild(place);
+        row.appendChild(firstName);
+        row.appendChild(lastName);
+        row.appendChild(time);
+        tbody.appendChild(row);
+    }
+}
+const hideScoreboard = function hideScoreboard() {
+    homepage.style.display = 'flex';
+    scoreboard.style.display = 'none';
+    scoreboardTable.tBodies[0].innerHTML = '';
 }
 
 
@@ -289,10 +331,22 @@ const addListeners = function addListeners() {
             event.target.classList.add('active-pattern');
         };
     };
-    const changeActivePatternViaKeyboard = function changeActivePatternViaKeyboard(event) {
+    const addKeyboardControl = function addKeyboardControl(event) {
         if (event.target.classList.contains('back-side-pattern') && (event.keyCode === keycodes.ENTER || event.keyCode === keycodes.SPACE)) {
             event.preventDefault();
             changeActivePattern();
+        }
+        if (event.target.classList.contains('difficulty') && (event.keyCode === keycodes.ENTER || event.keyCode === keycodes.SPACE)) {
+            event.preventDefault();
+            changeActiveDifficulty();
+        }
+        if (event.target.classList.contains('play-button') && (event.keyCode === keycodes.ENTER || event.keyCode === keycodes.SPACE)) {
+            event.preventDefault();
+            startGame();
+        }
+        if (event.target.classList.contains('scoreboard-button') && (event.keyCode === keycodes.ENTER || event.keyCode === keycodes.SPACE)) {
+            event.preventDefault();
+            showScoreboard();
         }
     };
     const changeActiveDifficulty = function changeActiveDifficulty() {
@@ -308,15 +362,6 @@ const addListeners = function addListeners() {
             target.classList.add('active-difficulty');
         };
     };
-    const changeActiveDifficultyViaKeyboard = function changeActiveDifficultyViaKeyboard(event) {
-        if (event.target.classList.contains('difficulty') && (event.keyCode === keycodes.ENTER || event.keyCode === keycodes.SPACE)) {
-            event.preventDefault();
-            changeActiveDifficulty();
-        }
-    };
-    const forceBlur = function forceBlur(event) {
-        event.target.blur();
-    }
 
     const keycodes = {
         ENTER: 13,
@@ -325,10 +370,10 @@ const addListeners = function addListeners() {
     const buttons = [...document.querySelectorAll('.button')];
 
     patternContainer.addEventListener('mousedown', changeActivePattern);
-    document.body.addEventListener('keydown', changeActivePatternViaKeyboard);
+    document.body.addEventListener('keydown', addKeyboardControl);
     difficultiesContainer.addEventListener('mousedown', changeActiveDifficulty);
-    document.body.addEventListener('keydown', changeActiveDifficultyViaKeyboard);
-    buttons.forEach(button => { button.addEventListener('click', forceBlur) });
+    scoreboardButton.addEventListener('click', showScoreboard);
+    scoreboardHomepageButton.addEventListener('click', hideScoreboard);
 
     // start game when clicked on PLAY button
     playButton.addEventListener('click', startGame);
@@ -337,7 +382,7 @@ const addListeners = function addListeners() {
     playAgainButton.addEventListener('click', restartGame);
 
     // stop game when clicked on HOMEPAGE button
-    homepageButton.addEventListener('click', stopGame);
+    gameHomepageButton.addEventListener('click', stopGame);
 }
 
 const homepage = document.querySelector('.homepage');
@@ -345,9 +390,14 @@ const form = document.forms['info'];
 const patternContainer = document.querySelector('.back-sides-container');
 const difficultiesContainer = document.querySelector('.difficulties-container');
 const playButton = document.querySelector('.play-button');
+const scoreboardButton = document.querySelector('.scoreboard-button');
+
+const scoreboard = document.querySelector('.scoreboard');
+const scoreboardHomepageButton = document.querySelector('.scoreboard-homepage-button');
+const scoreboardTable = document.querySelector('.scoreboard-table');
 
 const gamepage = document.querySelector('.gamepage');
-const homepageButton = document.querySelector('.homepage-button');
+const gameHomepageButton = document.querySelector('.game-homepage-button');
 const timerDOMElem = document.querySelector('.timer-value');
 const playAgainButton = document.querySelector('.play-again-button');
 const field = document.querySelector('.field');
@@ -360,6 +410,14 @@ const frontSides = [
     'url("./images/ronaldo.jpg")',
     'url("./images/neymar.jpg")',
     'url("./images/buffon.jpg")',
+    'url("./images/ibrahimovic.jpg")',
+    'url("./images/salah.jpg")',
+    'url("./images/ozil.jpg")',
+    'url("./images/cavani.jpg")',
+    'url("./images/lewandowski.jpg")',
+    'url("./images/bonucci.jpg")',
+    'url("./images/pogba.jpg")',
+    'url("./images/sanchez.jpg")',
 ];
 
 // create and initialize game object
@@ -368,7 +426,3 @@ let game = new Game();
 let timer = new Timer();
 
 addListeners();
-
-
-
-// TODO: forceBlur только на одной кнопке

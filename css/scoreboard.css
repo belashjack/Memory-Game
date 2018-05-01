@@ -1,0 +1,36 @@
+.scoreboard {
+    display: none;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    height: calc(100vh - 100px);
+    font-size: 1.8rem;
+    color: rgb(255, 255, 255);
+}
+.scoreboard-table {
+    min-width: 345px;
+    text-align: center;
+    border-collapse: collapse;
+}
+.scoreboard-table td {
+    
+    padding: 5px 15px;
+    border: 1px solid rgb(255, 255, 255);
+}
+@media screen and (max-width: 505px) {
+    .scoreboard-table td {
+        padding: 5px 5px;
+    }
+}
+@media screen and (max-width: 425px) {
+    .scoreboard-table td {
+        max-width: 120px;
+        overflow: auto;
+    }
+}
+.scoreboard-table thead {
+    background-color: rgb(0, 109, 126);
+}
+.scoreboard-table tbody tr:nth-of-type(2n+1) {
+    background-color: rgb(0, 141, 163);
+}

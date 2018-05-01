@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="./css/main.css">
     <link rel="stylesheet" href="./css/homepage.css">
+    <link rel="stylesheet" href="./css/scoreboard.css">
     <link rel="stylesheet" href="./css/game.css">
     <title>Document</title>
 </head>
@@ -72,11 +73,11 @@
                 </div>
             </section>
             <a class="button play-button" tabindex="30">Play</a>
-            <a class="button scoreboard" tabindex="31">Scoreboard</a>
+            <a class="button scoreboard-button" tabindex="31">Scoreboard</a>
         </div>
         <div class="gamepage">
             <nav class="navigation">
-                <a class="button homepage-button">Homepage</a>
+                <a class="button game-homepage-button">Homepage</a>
                 <section class="timer">
                     <div class="timer-inner">
                         <span class="timer-value">0</span>
@@ -92,6 +93,21 @@
                 <span>Your result is</span>
                 <span class="result-value"></span>
             </section>
+        </div>
+        <div class="scoreboard">
+            <a class="button scoreboard-homepage-button">Homepage</a>
+            <table class="scoreboard-table">
+                <thead>
+                    <tr>
+                        <td>Place</td>
+                        <td>First Name</td>
+                        <td>Last Name</td>
+                        <td>Time</td>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
         </div>
     </main>
     <!-- TODO: smth wrong with footer when little room -->
