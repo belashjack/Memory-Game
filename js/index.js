@@ -37,21 +37,33 @@ class Game {
             return Math.floor(Math.random() * (max - min + 1)) + min;
         }
 
-        // create card DOM objects
         for (let i = 0; i < this.numberOfCards; i++) {
             const card = new Card(i, this.backSide, getRandomFrontSide(this.frontSides, this.numberOfCards));
             this.cards.push(card.getDOMElem());
         }
     }
     addCards() {
-        // add card DOM objects to the field
-        this.cards.forEach((elem) => {
-            const card = elem;
+        this.cards.forEach((card) => {
             field.appendChild(card);
         });
     }
     addGameListeners() {
         field.addEventListener('click', Card.turnCard);
+    }
+    getFlippedCards() {
+        return [...field.querySelectorAll('.flipped')];
+    }
+    compareCards(flippedCards) {
+        if (getComputedStyle(flippedCards[0].children[0]).backgroundImage === getComputedStyle(flippedCards[1].children[0]).backgroundImage) {
+            return true;
+        }
+        return false;
+    }
+    showResult() {
+        field.innerHTML = '';
+        field.style.display = 'none';
+        result.style.display = 'flex';
+        resultValue.innerHTML = timerDOMElem.innerHTML + ' sec.';
     }
     showGame() {
         homepage.style.display = 'none';
@@ -62,32 +74,16 @@ class Game {
     hideGame() {
         homepage.style.display = 'flex';
         gamepage.style.display = 'none';
-        // field.style.display = 'flex';
         window.scrollTo(0, 0);
-    }
-    compareCards(flippedCards) {
-        if (getComputedStyle(flippedCards[0].children[0]).backgroundImage === getComputedStyle(flippedCards[1].children[0]).backgroundImage) {
-            return true;
-        }
-        return false;
-    }
-    getFlippedCards() {
-        return [...field.querySelectorAll('.flipped')];
-    }
-    showResult() {
-        field.innerHTML = '';
-        field.style.display = 'none';
-        result.style.display = 'flex';
-        resultValue.innerHTML = timerDOMElem.innerHTML + ' sec.';
     }
     stopGame() {
         timer.stop();
         field.innerHTML = '';
+        result.style.display = 'none';
+        resultValue.innerHTML = '';
         this.timeouts.forEach((timeout) => {
             clearTimeout(timeout);
         });
-        result.style.display = 'none';
-        resultValue.innerHTML = '';
     }
 }
 
@@ -100,19 +96,24 @@ class Card {
     getDOMElem() {
         const card = document.createElement('section');
         card.classList.add('card');
+
         const cardInner = document.createElement('div');
         cardInner.classList.add('card-inner');
+
         const front = document.createElement('figure');
         front.classList.add('front');
         front.style.background = this.frontSide;
         front.style.backgroundSize = 'cover';
+
         const back = document.createElement('figure');
         back.classList.add('back');
         back.style.background = this.backSide;
         back.style.backgroundSize = 'cover';
+
         cardInner.appendChild(front);
         cardInner.appendChild(back);
         card.appendChild(cardInner);
+
         return card;
     }
     static turnCard(event) {
@@ -146,9 +147,16 @@ class Card {
                         game.cards.splice(game.cards.indexOf(elem.parentNode), 1);
                         elem.classList.remove('flipped');
                         elem.style.display = 'none';
+
+                        // stop game if all cards disappeared
                         if (game.cards.length === 0) {
+                            // stop timer
                             timer.stop();
+
+                            // clear field, show result
                             game.showResult();
+
+                            // save result into localStorage
                             storeResult();
                         }
                         game.flippedCardsAmount = 0;
@@ -188,7 +196,26 @@ class Timer {
 }
 
 const startGame = function startGame() {
-    if(!checkValidity()) {
+    const checkFormValidity = function checkFormValidity() {
+        const elements = [...form.elements];
+        let hasMistakes = false;
+        elements.forEach((elem) => {
+            if (!elem.checkValidity()) {
+                hasMistakes = true;
+                form.previousElementSibling.scrollIntoView();
+                elem.classList.add('invalid-field');
+            } else {
+                elem.classList.remove('invalid-field');
+            }
+        });
+        if (document.querySelector('.invalid-field') !== null) {
+            document.querySelector('.invalid-field').focus();
+        }
+        return !hasMistakes;
+    }
+
+    // simple form validation
+    if (!checkFormValidity()) {
         return false;
     }
 
@@ -201,45 +228,49 @@ const startGame = function startGame() {
     // get back side background
     game.getBackSide();
 
-    // get front side backgrounds
+    // get front side backgrounds used in this game
     game.getFrontSides();
 
+    // create card DOM objects
     game.createCards();
 
+    // add card DOM objects to the field
     game.addCards();
+
+    // make card able to turn
     game.addGameListeners();
+
+    // show game field, hide homepage
     game.showGame();
 
+    // start timer
     timer.start();
 }
 const restartGame = function restartGame() {
+    // stop game (stop timer, clear field and result, cancel existing timeout actions)
     game.stopGame();
+
+    // create new game object instead of previous one
     game = new Game();
+
+    // create new timer object instead of previous one
     timer = new Timer();
+
+    // start new game with new objects
     startGame(game, timer);
 }
 const stopGame = function stopGame() {
+    // stop game (stop timer, clear field and result, cancel existing timeout actions)
     game.stopGame();
+
+    // hide game field, show homepage
     game.hideGame();
+
+    // create new game object instead of previous one
     game = new Game();
+
+    // create new timer object instead of previous one
     timer = new Timer();
-}
-const checkValidity = function checkValidity() {
-    const elements = [...form.elements];
-    let hasMistakes = false;
-    elements.forEach((elem) => {
-        if (!elem.checkValidity()) {
-            hasMistakes = true;
-            form.previousElementSibling.scrollIntoView();
-            elem.classList.add('invalid-field');
-        } else {
-            elem.classList.remove('invalid-field');
-        }
-    });
-    if (document.querySelector('.invalid-field')) {
-        document.querySelector('.invalid-field').focus();
-    }
-    return !hasMistakes;
 }
 const storeResult = function storeResult() {
     const archive = [];
@@ -290,10 +321,12 @@ const showScoreboard = function showScoreboard() {
         return Number(a) - Number(b);
     });
 
+    // retrieve items from localStorage
     for (let i = 0; i < keys.length; i++) {
         archive.push(localStorage.getItem(keys[i]))
     }
 
+    // create table row with the result from localStorage item and append it to the table
     for (let i = 0; i < archive.length; i++) {
         const row = document.createElement('tr');
         const place = document.createElement('td');
@@ -317,7 +350,6 @@ const hideScoreboard = function hideScoreboard() {
     scoreboardTable.tBodies[0].innerHTML = '';
 }
 
-
 const addListeners = function addListeners() {
     const changeActivePattern = function changeActivePattern() {
         if (event.target.classList.contains('back-side-pattern') && !event.target.classList.contains('active-pattern')) {
@@ -329,6 +361,19 @@ const addListeners = function addListeners() {
                 }
             }
             event.target.classList.add('active-pattern');
+        };
+    };
+    const changeActiveDifficulty = function changeActiveDifficulty() {
+        if (event.target.closest('.difficulty') !== null) {
+            const target = event.target.closest('.difficulty');
+            const children = [...target.parentNode.children];
+            for (let i = 0; i < children.length; i++) {
+                if (children[i].classList.contains('active-difficulty')) {
+                    children[i].classList.remove('active-difficulty');
+                    break;
+                }
+            }
+            target.classList.add('active-difficulty');
         };
     };
     const addKeyboardControl = function addKeyboardControl(event) {
@@ -348,31 +393,30 @@ const addListeners = function addListeners() {
             event.preventDefault();
             showScoreboard();
         }
+        if (event.target.classList.contains('scoreboard-homepage-button') && (event.keyCode === keycodes.ENTER || event.keyCode === keycodes.SPACE)) {
+            event.preventDefault();
+            hideScoreboard();
+        }
+        if (event.target.classList.contains('game-homepage-button') && (event.keyCode === keycodes.ENTER || event.keyCode === keycodes.SPACE)) {
+            event.preventDefault();
+            stopGame();
+        }
+        if (event.target.classList.contains('play-again-button') && (event.keyCode === keycodes.ENTER || event.keyCode === keycodes.SPACE)) {
+            event.preventDefault();
+            restartGame();
+        }
     };
-    const changeActiveDifficulty = function changeActiveDifficulty() {
-        if (event.target.closest('.difficulty') !== null) {
-            const target = event.target.closest('.difficulty');
-            const children = [...target.parentNode.children];
-            for (let i = 0; i < children.length; i++) {
-                if (children[i].classList.contains('active-difficulty')) {
-                    children[i].classList.remove('active-difficulty');
-                    break;
-                }
-            }
-            target.classList.add('active-difficulty');
-        };
-    };
-
-    const keycodes = {
-        ENTER: 13,
-        SPACE: 32
-    };
-    const buttons = [...document.querySelectorAll('.button')];
 
     patternContainer.addEventListener('mousedown', changeActivePattern);
-    document.body.addEventListener('keydown', addKeyboardControl);
     difficultiesContainer.addEventListener('mousedown', changeActiveDifficulty);
+
+    // add keyboard control
+    document.body.addEventListener('keydown', addKeyboardControl);
+
+    // show scoreboard when clicked on SCOREBOARD button
     scoreboardButton.addEventListener('click', showScoreboard);
+
+    // close scoreboard
     scoreboardHomepageButton.addEventListener('click', hideScoreboard);
 
     // start game when clicked on PLAY button
@@ -385,6 +429,7 @@ const addListeners = function addListeners() {
     gameHomepageButton.addEventListener('click', stopGame);
 }
 
+// get elements on the homepage
 const homepage = document.querySelector('.homepage');
 const form = document.forms['info'];
 const patternContainer = document.querySelector('.back-sides-container');
@@ -392,10 +437,12 @@ const difficultiesContainer = document.querySelector('.difficulties-container');
 const playButton = document.querySelector('.play-button');
 const scoreboardButton = document.querySelector('.scoreboard-button');
 
+// get elements on the scoreboard
 const scoreboard = document.querySelector('.scoreboard');
 const scoreboardHomepageButton = document.querySelector('.scoreboard-homepage-button');
 const scoreboardTable = document.querySelector('.scoreboard-table');
 
+// get elements on the gamepage
 const gamepage = document.querySelector('.gamepage');
 const gameHomepageButton = document.querySelector('.game-homepage-button');
 const timerDOMElem = document.querySelector('.timer-value');
@@ -420,9 +467,16 @@ const frontSides = [
     'url("./images/sanchez.jpg")',
 ];
 
-// create and initialize game object
+// codes for ENTER and SPACE
+const keycodes = {
+    ENTER: 13,
+    SPACE: 32
+};
+
+// create game object
 let game = new Game();
 
+// create game object
 let timer = new Timer();
 
 addListeners();
