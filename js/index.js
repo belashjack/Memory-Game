@@ -464,7 +464,7 @@ const addListeners = function addListeners() {
 
 // get elements on the homepage
 const homepage = document.querySelector('.homepage');
-const form = document.form.info;
+const form = document.forms.info;
 const patternContainer = document.querySelector('.back-sides-container');
 const difficultiesContainer = document.querySelector('.difficulties-container');
 const playButton = document.querySelector('.play-button');
