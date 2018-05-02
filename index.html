@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/homepage.css">
+    <link rel="stylesheet" href="./css/scoreboard.css">
+    <link rel="stylesheet" href="./css/game.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <main>
+        <div class="homepage">
+            <section class="greeting">
+                <h1>Hi 👋 Nice to meet you!</h1>
+            </section>
+            <section class="game-description">
+                <p>
+                    <strong>&ldquo;Memory&rdquo;</strong> is a game where the goal is to find all pairs of cards for the shortest
+                    time.
+                </p>
+            </section>
+            <section class="game-rules">
+                <h2>To play</h2>
+                <ol>
+                    <li>Select two cards and try to match the pictures</li>
+                    <li>If you match the pictures, you can go again</li>
+                    <li>If you don't match the pictures, the computer turns them</li>
+                    <li>Game ends when all pairs are found</li>
+                </ol>
+            </section>
+            <section class="player-info">
+                <h2>Please, provide us with some information to play</h2>
+                <form action="" name="info">
+                    <label>First Name
+                        <input type="text" name="firstName" id="firstName" tabindex="1" required>
+                    </label>
+                    <label>Last Name
+                        <input type="text" name="lastName" id="lastName" tabindex="2" required>
+                    </label>
+                    <label>Email
+                        <input type="email" name="email" id="email" tabindex="3" placeholder="example@site.com" required>
+                    </label>
+                </form>
+            </section>
+            <section class="game-settings">
+                <h2>Choose the back of the card</h2>
+                <div class="back-sides-container">
+                    <div class="back-side-pattern back-side-pattern-1 active-pattern" tabindex="10"></div>
+                    <div class="back-side-pattern back-side-pattern-2" tabindex="11"></div>
+                    <div class="back-side-pattern back-side-pattern-3" tabindex="12"></div>
+                    <div class="back-side-pattern back-side-pattern-4" tabindex="13"></div>
+                    <div class="back-side-pattern back-side-pattern-5" tabindex="14"></div>
+                </div>
+                <h2>Choose difficulty</h2>
+                <div class="difficulties-container">
+                    <div class="difficulty easy active-difficulty" tabindex="20" data-amount="12">
+                        <span class="level">easy</span>
+                        <span class="number-of-cards">12 cards</span>
+                    </div>
+                    <div class="difficulty normal" tabindex="21" data-amount="18">
+                        <span class="level">normal</span>
+                        <span class="number-of-cards">18 cards</span>
+                    </div>
+                    <div class="difficulty hard" tabindex="22" data-amount="24">
+                        <span class="level">hard</span>
+                        <span class="number-of-cards">24 cards</span>
+                    </div>
+                </div>
+            </section>
+            <a class="button play-button" tabindex="30">Play</a>
+            <a class="button scoreboard-button" tabindex="31">Scoreboard</a>
+        </div>
+        <div class="gamepage">
+            <nav class="navigation">
+                <a class="button game-homepage-button" tabindex="0">Homepage</a>
+                <section class="timer">
+                    <div class="timer-inner">
+                        <span class="timer-value">0</span>
+                    </div>
+                    <span class="timer-units">Seconds</span>
+                </section>
+                <a class="button play-again-button" tabindex="0">Play again</a>
+            </nav>
+            <section class="field">
+
+            </section>
+            <section class="result">
+                <span>Your result is</span>
+                <span class="result-value"></span>
+            </section>
+        </div>
+        <div class="scoreboard">
+            <a class="button scoreboard-homepage-button" tabindex="0">Homepage</a>
+            <table class="scoreboard-table">
+                <thead>
+                    <tr>
+                        <td>Place</td>
+                        <td>First Name</td>
+                        <td>Last Name</td>
+                        <td>Time</td>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </main>
+    <!-- TODO: smth wrong with footer when little room -->
+    <footer>
+        <section class="creator">
+            <span>© 2018 Yauheni Belash</span>
+        </section>
+        <section class="contact">
+            <span class="email">Email:
+                <a href="mailto:belashjack1@gmail.com">belashjack1@gmail.com</a>
+            </span>
+            <span class="telegram">Telegram:
+                <a href="tg://resolve?domain=belashjack">belashjack</a>
+            </span>
+        </section>
+    </footer>
+    <script src="./js/index.js"></script>
+</body>
+
+</html>
