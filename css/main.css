@@ -65,7 +65,7 @@ footer a {
     background-color: rgb(255, 255, 255);
     color: rgb(66, 152, 165);
 }
-.button:active {
+.button:hover:active {
     background-color: rgb(234, 240, 246);
     border-color: rgb(234, 240, 246);
 }
